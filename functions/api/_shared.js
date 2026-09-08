@@ -1,4 +1,6 @@
-export const STAGES = ["a", "ab", "abc"];
+// One exhibit visible at a time: "warmup" shows none (presenter is
+// narrating), then "a"/"b"/"c" each show exactly that exhibit.
+export const STAGES = ["warmup", "a", "b", "c"];
 
 export function todaySessionId() {
   return new Date().toISOString().slice(0, 10);
@@ -15,7 +17,7 @@ export async function getCurrentSessionId(kv) {
 export async function loadSession(kv, id) {
   const raw = await kv.get(`session:${id}`);
   if (raw) return JSON.parse(raw);
-  return { stage: "a", submissions: {} };
+  return { stage: "warmup", submissions: {} };
 }
 
 export async function saveSession(kv, id, doc) {

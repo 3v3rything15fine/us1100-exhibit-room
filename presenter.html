@@ -245,11 +245,13 @@
   </div>
 
   <div class="card">
-    <h2>Reveal exhibits</h2>
+    <h2>Show exhibit</h2>
+    <p class="session-note" style="margin:0 0 12px">Students only ever see the one you pick here, plus its own discussion-starter prompts. Nothing is cumulative — opening B hides A.</p>
     <div class="stage-row">
-      <button class="stage-btn" data-stage="a">Exhibit A only</button>
-      <button class="stage-btn" data-stage="ab">+ Exhibit B</button>
-      <button class="stage-btn" data-stage="abc">+ Exhibit C</button>
+      <button class="stage-btn" data-stage="warmup">Warm-up (none)</button>
+      <button class="stage-btn" data-stage="a">Exhibit A</button>
+      <button class="stage-btn" data-stage="b">Exhibit B</button>
+      <button class="stage-btn" data-stage="c">Exhibit C</button>
     </div>
     <p class="session-note" id="session-note">connecting…</p>
   </div>
@@ -273,7 +275,7 @@
 
   <div class="card">
     <h2>New class session</h2>
-    <p class="session-note">Reuse this same site later in the term — this resets the stage to "Exhibit A only" and clears today's tally under a fresh date-keyed session. It does not touch the code, only the live state.</p>
+    <p class="session-note">Reuse this same site later in the term — this resets to "nothing open yet" and clears today's tally under a fresh date-keyed session. It does not touch the code, only the live state.</p>
     <button class="ghost" id="new-session-btn">Start a new session (today's date)</button>
   </div>
 </div>
@@ -299,9 +301,9 @@
       body: 'Freire’s alternative: student and teacher investigate together. A "best practice" isn’t a deposit to accept — it’s a claim to test against your actual conditions. Your week. Your job. Your schooling before this class. Does the rule hold, or does it only hold for whoever it was built around?'
     },
     {
-      kicker: 'TODAY’S QUESTION',
-      title: 'Not "does it work?" — "whose week does it assume?"',
-      body: 'Exhibit A: sort the tools by whether they assume or teach. Exhibit B: stress-test the "2–3 hours per class hour" rule against a real student’s week. Exhibit C: look at what gets called an "advantage" instead of a baseline. Watch for the word "just."'
+      kicker: 'HOW TODAY WORKS',
+      title: 'One exhibit at a time',
+      body: 'You\'ll open Exhibit A, then B, then C from this console — never all at once. Each one carries its own "while you work" prompt on students\' screens, plus this same reminder they can reopen anytime. Talk through the prompts with your table as you go — you don\'t need to agree before moving on.'
     }
   ];
   var warmupIndex = 0;
@@ -339,10 +341,14 @@
   var panel = document.getElementById('panel');
 
   function tryToken(candidate){
-    return fetch('/api/advance', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ token: candidate, stage: 'a' })
+    // Re-send whatever stage is already live so verifying the passcode
+    // never itself changes where students are.
+    return fetch('/api/state').then(function(r){ return r.json(); }).then(function(state){
+      return fetch('/api/advance', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ token: candidate, stage: state.stage })
+      });
     }).then(function(r){
       if(r.status === 401) return false;
       return r.json().then(function(data){
@@ -372,14 +378,8 @@
 
   // if we already have a saved token, verify it silently (re-sends current stage, harmless)
   if(token){
-    fetch('/api/state').then(function(r){ return r.json(); }).then(function(state){
-      return fetch('/api/advance', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ token: token, stage: state.stage })
-      });
-    }).then(function(r){
-      if(r.ok){
+    tryToken(token).then(function(ok){
+      if(ok){
         gate.hidden = true;
         panel.hidden = false;
         pollState();
@@ -387,12 +387,13 @@
     }).catch(function(){});
   }
 
+  var STAGE_LABELS = { warmup: 'nothing open yet', a: 'Exhibit A open', b: 'Exhibit B open', c: 'Exhibit C open' };
+
   function applyState(data){
     document.querySelectorAll('.stage-btn').forEach(function(btn){
       btn.setAttribute('aria-pressed', btn.dataset.stage === data.stage);
     });
-    var label = data.stage === 'abc' ? 'all exhibits open' : (data.stage === 'ab' ? 'Exhibits A–B open' : 'Exhibit A open');
-    document.getElementById('session-note').textContent = 'Session ' + data.session + ' · ' + label;
+    document.getElementById('session-note').textContent = 'Session ' + data.session + ' · ' + (STAGE_LABELS[data.stage] || data.stage);
     document.getElementById('n-assumes').textContent = data.aggregate.assumes;
     document.getElementById('n-teaches').textContent = data.aggregate.teaches;
     document.getElementById('n-students').textContent = data.aggregate.n;

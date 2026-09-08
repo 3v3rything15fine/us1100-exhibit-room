@@ -14,7 +14,7 @@ export async function onRequestPost({ request, env }) {
 
   if (body.action === "new_session") {
     const id = todaySessionId();
-    const doc = { stage: "a", submissions: {} };
+    const doc = { stage: "warmup", submissions: {} };
     await saveSession(env.STATE, id, doc);
     await env.STATE.put("current_session", id);
     return new Response(
