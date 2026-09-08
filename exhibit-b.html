@@ -25,6 +25,7 @@
     --seg-chores: #50A3A4;
     --seg-sleep: #3E5C76;
     --seg-free: #7E9B5D;
+    --seg-curveball: #F95335;
     --serif: 'Source Serif 4', Georgia, serif;
     --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -78,25 +79,54 @@
   .concept-box p{ font-size: 14px; margin: 0 0 14px; }
   .concept-box p strong{ color: var(--teal); }
 
-  .profile-toggle{
-    display: flex; border: 2px solid var(--brown); border-radius: 999px;
-    overflow: hidden; margin-bottom: 18px; width: fit-content; box-shadow: var(--shadow);
+  /* sliders: set your own week */
+  .slider-panel{
+    background: var(--paper-dark); border: 2px solid var(--line); border-radius: var(--radius);
+    padding: 18px 22px; margin-bottom: 22px; box-shadow: var(--shadow);
   }
-  .profile-toggle button{
-    font-family: var(--mono); font-size: 13px; padding: 10px 20px;
-    background: var(--paper); border: none; cursor: pointer;
-    color: var(--ink); border-right: 2px solid var(--brown);
+  .slider-row{ margin-bottom: 16px; }
+  .slider-row:last-child{ margin-bottom: 0; }
+  .slider-row .label-row{
+    display: flex; justify-content: space-between; font-family: var(--mono);
+    font-size: 12.5px; color: var(--ink-soft); margin-bottom: 6px;
   }
-  .profile-toggle button:last-child{ border-right: none; }
-  .profile-toggle button[aria-pressed="true"]{ background: var(--brown); color: var(--paper); }
+  .slider-row .label-row strong{ color: var(--ink); font-size: 14px; }
+  .slider-row input[type="range"]{
+    width: 100%; accent-color: var(--brown); height: 22px; cursor: pointer;
+  }
 
-  .profile-note{ font-size: 13px; color: var(--ink-soft); margin: 0 0 20px; }
-
-  .disruption{
-    display:flex; align-items:center; gap: 10px; font-family: var(--mono);
-    font-size: 13px; margin-bottom: 22px; cursor: pointer; user-select: none;
+  /* curveball controls */
+  .curveball-controls{ display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+  button.curveball-btn{
+    font-family: var(--mono); font-size: 14px; padding: 12px 20px;
+    background: var(--alarm); color: #fff; border: 2px solid var(--alarm);
+    border-radius: 999px; cursor: pointer; box-shadow: var(--shadow);
+    transition: transform .1s ease;
   }
-  .disruption input{ width:16px; height:16px; }
+  button.curveball-btn:hover{ transform: translateY(-1px); }
+  button.curveball-btn:active{ transform: translateY(0); }
+  button.reset-btn{
+    font-family: var(--mono); font-size: 13px; padding: 11px 18px;
+    background: transparent; color: var(--ink-soft); border: 2px solid var(--line);
+    border-radius: 999px; cursor: pointer;
+  }
+  button.reset-btn:hover{ border-color: var(--brown); color: var(--ink); }
+
+  .event-log{ display: grid; gap: 10px; margin-bottom: 22px; }
+  .event-card{
+    background: #FDEDE7; border: 2px solid var(--alarm); border-radius: var(--radius-sm);
+    padding: 12px 16px; box-shadow: var(--shadow);
+  }
+  .event-card:nth-child(odd){ transform: rotate(-0.6deg); }
+  .event-card:nth-child(even){ transform: rotate(0.6deg); }
+  .event-card .ev-head{ display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .event-card .ev-name{ font-weight: 600; font-size: 14.5px; }
+  .event-card .ev-hours{
+    font-family: var(--mono); font-size: 13px; flex: 0 0 auto;
+    color: var(--alarm);
+  }
+  .event-card .ev-hours.relief{ color: var(--seg-free); }
+  .event-card .ev-flavor{ font-size: 13px; color: var(--ink-soft); margin: 4px 0 0; }
 
   .big-number{ font-family: var(--serif); font-size: clamp(38px, 9vw, 58px); font-weight: 700; line-height: 1; margin: 0; }
   .big-number-label{ font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 6px 0 20px; }
@@ -132,7 +162,6 @@
     margin-top: 40px; padding: 24px; text-align: center;
     border: 2px dashed var(--brown); border-radius: var(--radius); background: var(--paper-dark);
   }
-  .next-box p{ margin: 0 0 12px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
   .next-link{
     display: inline-block; font-family: var(--mono); font-size: 14px;
     padding: 13px 26px; background: var(--brown); color: var(--paper);
@@ -170,18 +199,33 @@
     <span class="exhibit-tag">EXHIBIT B</span>
     <h2>Stress-test the calendar</h2>
   </div>
-  <p class="instructions">This week's Fixed-Commitment Calendar says to study 2–3 hours for every hour of class. Fair enough — but the rule doesn't know whose week it's landing on. Toggle between two students and watch what's left over.</p>
+  <p class="instructions">This week's Fixed-Commitment Calendar says to study 2–3 hours for every hour of class. Set your own week below with what's actually true for you — then deal yourself a curveball and watch what the calendar quietly assumed disappear.</p>
 
-  <div class="profile-toggle" role="group" aria-label="Choose a student profile">
-    <button id="btn-control" aria-pressed="true">Control Student</button>
-    <button id="btn-real" aria-pressed="false">Real Student</button>
+  <div class="slider-panel">
+    <div class="slider-row">
+      <div class="label-row"><strong>Class hours</strong><span id="val-class">15</span>/wk</div>
+      <input type="range" id="slider-class" min="3" max="18" step="1" value="15">
+    </div>
+    <div class="slider-row">
+      <div class="label-row"><strong>Job hours</strong><span id="val-job">0</span>/wk</div>
+      <input type="range" id="slider-job" min="0" max="40" step="1" value="0">
+    </div>
+    <div class="slider-row">
+      <div class="label-row"><strong>Commute hours</strong><span id="val-commute">0</span>/wk</div>
+      <input type="range" id="slider-commute" min="0" max="20" step="1" value="0">
+    </div>
+    <div class="slider-row">
+      <div class="label-row"><strong>Chores / eating</strong><span id="val-chores">14</span>/wk</div>
+      <input type="range" id="slider-chores" min="5" max="20" step="1" value="14">
+    </div>
   </div>
-  <p class="profile-note" id="profile-note"></p>
 
-  <label class="disruption">
-    <input type="checkbox" id="disruption-toggle">
-    Something comes up this week (+12 hrs — a shift covers, a car repair, a family thing)
-  </label>
+  <div class="curveball-controls">
+    <button type="button" class="curveball-btn" id="deal-btn">🎲 Deal a curveball</button>
+    <button type="button" class="reset-btn" id="reset-btn">Reset my week</button>
+  </div>
+
+  <div class="event-log" id="event-log"></div>
 
   <p class="big-number" id="leftover-number">0</p>
   <p class="big-number-label" id="leftover-label">HOURS LEFT, OUT OF 168, FOR EVERYTHING ELSE</p>
@@ -193,7 +237,7 @@
   <div id="callout-box"></div>
 
   <div class="discuss starters">
-    <strong>While you toggle:</strong> Switch to Real Student and check the disruption box. What's the first thing you'd personally cut — sleep, class, or the job? The calendar calls a disruption "something that comes up" — how often does something come up for you in a normal semester?
+    <strong>While you build your week:</strong> Deal at least two curveballs before comparing with your table. Whose week still has hours to spare after two curveballs — and whose doesn't? What made the difference?
   </div>
 
   <div class="next-box">
@@ -208,40 +252,62 @@
 
 <script>
 (function(){
-  var PROFILES = {
-    control: {
-      label: 'Control Student',
-      note: '15 credit hours. No job. Lives on campus, no commute.',
-      cls: 15, job: 0, commute: 0, chores: 14, sleepBase: 56
-    },
-    real: {
-      label: 'Real Student',
-      note: '13 credit hours. Part-time job. Commutes from home.',
-      cls: 13, job: 32, commute: 10, chores: 14, sleepBase: 49
+  var EVENTS = [
+    { label: 'Emergency gerbil vet visit', hours: 6, flavor: 'Turns out gerbils need specialists too.' },
+    { label: 'Car trouble', hours: 5, flavor: 'Three trips to the shop this week.' },
+    { label: 'A friend crashes on your couch', hours: 4, flavor: 'You are now the unofficial campus tour guide.' },
+    { label: 'Unscheduled group project meeting', hours: 3, flavor: 'Somehow this always happens the night before it\'s due.' },
+    { label: 'Wifi dies before a deadline', hours: 3, flavor: 'Emergency library trip to submit one file.' },
+    { label: 'Family emergency', hours: 10, flavor: 'You\'re driving home for the weekend.' },
+    { label: 'Sibling needs a ride all week', hours: 6, flavor: 'Practice does not schedule itself.' },
+    { label: 'Surprise pop quiz', hours: 2, flavor: 'One more study session, unplanned.' },
+    { label: 'A shift gets covered', hours: -8, flavor: 'A rare, unplanned day off work.' },
+    { label: 'Class gets canceled', hours: -4, flavor: 'Professor emails at 7am. Free morning.' }
+  ];
+
+  var deck = [];
+  function shuffle(arr){
+    for(var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
     }
-  };
+  }
+  function refillDeck(){ deck = EVENTS.slice(); shuffle(deck); }
 
-  var currentProfile = 'control';
+  var drawnEvents = [];
 
-  var SEG_COLORS = {
-    cls: getCss('--seg-class'), job: getCss('--seg-job'), commute: getCss('--seg-commute'),
-    chores: getCss('--seg-chores'), sleep: getCss('--seg-sleep'), study: getCss('--seg-study'), free: getCss('--seg-free')
-  };
   var SEG_LABELS = {
     cls: 'Class', job: 'Job', commute: 'Commute', chores: 'Chores / eating',
-    sleep: 'Sleep', study: 'Recommended study (2.5× class hrs)', free: 'Everything else'
+    sleep: 'Sleep', study: 'Recommended study (2.5× class hrs)', curveball: 'Curveballs', free: 'Everything else'
   };
 
   function getCss(varName){
     return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
   }
+  var SEG_COLORS = {
+    cls: getCss('--seg-class'), job: getCss('--seg-job'), commute: getCss('--seg-commute'),
+    chores: getCss('--seg-chores'), sleep: getCss('--seg-sleep'), study: getCss('--seg-study'),
+    curveball: getCss('--seg-curveball'), free: getCss('--seg-free')
+  };
 
-  function compute(profileKey, disruption){
-    var p = PROFILES[profileKey];
-    var extra = disruption ? 12 : 0;
-    var study = p.cls * 2.5;
-    var sleep = p.sleepBase;
-    var fixed = p.cls + p.job + p.commute + p.chores + sleep + extra;
+  function sliderVal(id){ return Number(document.getElementById(id).value); }
+
+  function curveballTotal(){
+    var sum = 0;
+    drawnEvents.forEach(function(e){ sum += e.hours; });
+    return Math.max(0, sum);
+  }
+
+  function compute(){
+    var cls = sliderVal('slider-class');
+    var job = sliderVal('slider-job');
+    var commute = sliderVal('slider-commute');
+    var chores = sliderVal('slider-chores');
+    var curveball = curveballTotal();
+    var sleepBase = 56;
+    var study = cls * 2.5;
+    var sleep = sleepBase;
+    var fixed = cls + job + commute + chores + sleep + curveball;
     var free = 168 - fixed;
     var leftover = free - study;
     var borrowed = 0;
@@ -253,22 +319,23 @@
       leftover += borrowed;
     }
     return {
-      cls: p.cls, job: p.job, commute: p.commute, chores: p.chores,
-      sleep: sleep, study: study, leftover: Math.max(leftover, 0),
-      borrowed: borrowed, impossible: leftover < 0, label: p.label, note: p.note
+      cls: cls, job: job, commute: commute, chores: chores, curveball: curveball,
+      sleep: sleep, study: study, leftover: Math.max(leftover, 0), borrowed: borrowed
     };
   }
 
-  function renderExhibitB(){
-    var disruption = document.getElementById('disruption-toggle').checked;
-    var r = compute(currentProfile, disruption);
+  function round1(n){ return Math.round(n * 10) / 10; }
 
-    document.getElementById('btn-control').setAttribute('aria-pressed', currentProfile === 'control');
-    document.getElementById('btn-real').setAttribute('aria-pressed', currentProfile === 'real');
-    document.getElementById('profile-note').textContent = r.note;
+  function render(){
+    document.getElementById('val-class').textContent = sliderVal('slider-class');
+    document.getElementById('val-job').textContent = sliderVal('slider-job');
+    document.getElementById('val-commute').textContent = sliderVal('slider-commute');
+    document.getElementById('val-chores').textContent = sliderVal('slider-chores');
 
-    var order = ['cls','job','commute','chores','sleep','study','leftover'];
-    var keyMap = { cls:'cls', job:'job', commute:'commute', chores:'chores', sleep:'sleep', study:'study', leftover:'free' };
+    var r = compute();
+
+    var order = ['cls','job','commute','chores','sleep','study','curveball','leftover'];
+    var keyMap = { cls:'cls', job:'job', commute:'commute', chores:'chores', sleep:'sleep', study:'study', curveball:'curveball', leftover:'free' };
     var bar = document.getElementById('bar');
     bar.innerHTML = '';
     order.forEach(function(k){
@@ -285,8 +352,8 @@
     var legend = document.getElementById('legend');
     legend.innerHTML = '';
     var legendData = [
-      ['cls', r.cls], ['job', r.job], ['commute', r.commute],
-      ['chores', r.chores], ['sleep', r.sleep], ['study', r.study], ['free', r.leftover]
+      ['cls', r.cls], ['job', r.job], ['commute', r.commute], ['chores', r.chores],
+      ['sleep', r.sleep], ['study', r.study], ['curveball', r.curveball], ['free', r.leftover]
     ];
     legendData.forEach(function(pair){
       var key = pair[0], val = pair[1];
@@ -315,15 +382,40 @@
       callout.innerHTML = round1(r.leftover) + ' hours of open room in the week — the formula has space to work here.';
     }
     box.appendChild(callout);
+
+    var log = document.getElementById('event-log');
+    log.innerHTML = '';
+    drawnEvents.slice().reverse().forEach(function(e){
+      var card = document.createElement('div');
+      card.className = 'event-card';
+      var relief = e.hours < 0;
+      card.innerHTML = '<div class="ev-head"><span class="ev-name">' + e.label + '</span><span class="ev-hours' + (relief ? ' relief' : '') + '">' +
+        (e.hours > 0 ? '+' : '') + e.hours + ' hrs</span></div><p class="ev-flavor">' + e.flavor + '</p>';
+      log.appendChild(card);
+    });
   }
 
-  function round1(n){ return Math.round(n * 10) / 10; }
+  document.getElementById('deal-btn').addEventListener('click', function(){
+    if(deck.length === 0) refillDeck();
+    drawnEvents.push(deck.pop());
+    render();
+  });
 
-  document.getElementById('btn-control').addEventListener('click', function(){ currentProfile = 'control'; renderExhibitB(); });
-  document.getElementById('btn-real').addEventListener('click', function(){ currentProfile = 'real'; renderExhibitB(); });
-  document.getElementById('disruption-toggle').addEventListener('change', renderExhibitB);
+  document.getElementById('reset-btn').addEventListener('click', function(){
+    document.getElementById('slider-class').value = 15;
+    document.getElementById('slider-job').value = 0;
+    document.getElementById('slider-commute').value = 0;
+    document.getElementById('slider-chores').value = 14;
+    drawnEvents = [];
+    render();
+  });
 
-  renderExhibitB();
+  ['slider-class','slider-job','slider-commute','slider-chores'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', render);
+  });
+
+  refillDeck();
+  render();
 })();
 </script>
 
