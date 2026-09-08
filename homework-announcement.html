@@ -5,95 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🚨 Homework Alert 🚨</title>
 <style>
-  :root {
-    --bg1: #1a0033;
-    --bg2: #ff2d75;
-    --accent: #ffd93d;
-    --card: #ffffff;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .hw-announce, .hw-announce * { box-sizing: border-box; }
+  .hw-announce {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: linear-gradient(-45deg, var(--bg1), var(--bg2), #ff9d00, var(--bg1));
-    background-size: 400% 400%;
-    animation: gradientShift 10s ease infinite;
-    padding: 20px;
-    overflow-x: hidden;
-  }
-  @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .card {
-    background: var(--card);
-    border-radius: 24px;
     max-width: 640px;
-    width: 100%;
+    margin: 0 auto;
+    padding: 28px 8px;
+  }
+  .hw-announce .hw-card {
+    background: #ffffff;
+    border-radius: 24px;
     padding: 40px 36px;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
     text-align: center;
     position: relative;
-    animation: pop 0.5s cubic-bezier(.34,1.56,.64,1);
+    border: 4px solid transparent;
+    background-image: linear-gradient(#fff, #fff), linear-gradient(-45deg, #1a0033, #ff2d75, #ff9d00, #1a0033);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    background-size: 100% 100%, 400% 400%;
+    animation: hw-gradientShift 10s ease infinite;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.18);
   }
-  @keyframes pop {
-    from { transform: scale(0.7) rotate(-2deg); opacity: 0; }
-    to { transform: scale(1) rotate(0deg); opacity: 1; }
+  @keyframes hw-gradientShift {
+    0% { background-position: 0 0, 0% 50%; }
+    50% { background-position: 0 0, 100% 50%; }
+    100% { background-position: 0 0, 0% 50%; }
   }
-  .siren {
-    font-size: 60px;
+  .hw-announce .hw-siren {
+    font-size: 56px;
     display: inline-block;
-    animation: wiggle 0.6s ease-in-out infinite;
+    animation: hw-wiggle 0.6s ease-in-out infinite;
   }
-  @keyframes wiggle {
+  @keyframes hw-wiggle {
     0%, 100% { transform: rotate(-10deg); }
     50% { transform: rotate(10deg); }
   }
-  h1 {
-    font-size: clamp(1.6rem, 5vw, 2.4rem);
+  .hw-announce h1 {
+    font-size: 28px;
     margin: 10px 0 4px;
     color: #1a0033;
-    line-height: 1.2;
+    line-height: 1.25;
   }
-  .highlight {
+  .hw-announce .hw-highlight {
     background: linear-gradient(90deg, #ff2d75, #ff9d00);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .subtitle {
-    font-size: 1.05rem;
+  .hw-announce .hw-subtitle {
+    font-size: 17px;
     color: #555;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
-  .timer {
+  .hw-announce .hw-timer {
     background: #1a0033;
-    color: var(--accent);
-    font-size: clamp(1.8rem, 6vw, 2.6rem);
-    font-weight: 800;
-    letter-spacing: 2px;
+    color: #ffd93d;
     border-radius: 16px;
     padding: 18px;
     margin: 20px 0;
-    font-variant-numeric: tabular-nums;
-    box-shadow: inset 0 0 20px rgba(255,255,255,0.05);
   }
-  .timer.done {
-    color: #ff5566;
-  }
-  .timer-label {
-    font-size: 0.85rem;
+  .hw-announce .hw-timer-label {
+    font-size: 13px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: #bbb;
     margin-bottom: 6px;
   }
-  ul.rules {
+  .hw-announce .hw-timer-value {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .hw-announce .hw-rules {
     text-align: left;
     background: #fff7e8;
     border: 2px dashed #ffb703;
@@ -102,19 +85,17 @@
     margin: 24px 0;
     list-style: none;
   }
-  ul.rules li {
-    margin: 12px 0;
-    font-size: 1.02rem;
+  .hw-announce .hw-rules li {
+    margin: 14px 0;
+    font-size: 16px;
+    line-height: 1.5;
     color: #333;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
   }
-  ul.rules li span.emoji {
-    font-size: 1.3rem;
-    flex-shrink: 0;
+  .hw-announce .hw-rules li .hw-emoji {
+    font-size: 20px;
+    margin-right: 8px;
   }
-  .stamp {
+  .hw-announce .hw-stamp {
     display: inline-block;
     margin-top: 18px;
     padding: 10px 22px;
@@ -125,65 +106,39 @@
     letter-spacing: 2px;
     border-radius: 10px;
     transform: rotate(-4deg);
-    font-size: 0.95rem;
+    font-size: 15px;
   }
-  .footer {
+  .hw-announce .hw-footer {
     margin-top: 20px;
-    font-size: 0.85rem;
+    font-size: 13px;
     color: #999;
   }
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="siren">🚨</div>
-    <h1>Heads up! It's <span class="highlight">Homework Deadline Day</span></h1>
-    <p class="subtitle">Yes, both weeks. Yes, all of it. Yes, today.</p>
 
-    <div class="timer" id="timer">
-      <div class="timer-label">Time remaining until 5:00 PM</div>
-      <div id="clock">--:--:--</div>
+<div class="hw-announce">
+  <div class="hw-card">
+    <div class="hw-siren">🚨</div>
+    <h1>Heads up! It's <span class="hw-highlight">Homework Deadline Day</span></h1>
+    <p class="hw-subtitle">Yes, both weeks. Yes, all of it. Yes, today.</p>
+
+    <div class="hw-timer">
+      <div class="hw-timer-label">Deadline</div>
+      <div class="hw-timer-value">5:00 PM TODAY</div>
     </div>
 
-    <ul class="rules">
-      <li><span class="emoji">📚</span> <strong>Last week's AND this week's homework</strong> are both due by <strong>5:00 PM today</strong>.</li>
-      <li><span class="emoji">🙅</span> The freebie extension fairy has left the building — <strong>no more automatic late passes</strong>.</li>
-      <li><span class="emoji">📉</span> Starting this week, late work caps out at <strong>50% max credit</strong>. Something is way better than nothing!</li>
-      <li><span class="emoji">⏰</span> Submit early, submit often, and definitely submit before the clock above hits zero.</li>
+    <ul class="hw-rules">
+      <li><span class="hw-emoji">📚</span><strong>Last week's AND this week's homework</strong> are both due by <strong>5:00 PM today</strong>.</li>
+      <li><span class="hw-emoji">🙅</span>The freebie extension fairy has left the building — <strong>no more automatic late passes</strong>.</li>
+      <li><span class="hw-emoji">📉</span>Starting this week, late work caps out at <strong>50% max credit</strong>. Something is way better than nothing!</li>
+      <li><span class="hw-emoji">⏰</span>Submit early, submit often, and definitely submit before the clock strikes 5.</li>
     </ul>
 
-    <div class="stamp">Get it in by 5pm!</div>
-    <p class="footer">Questions? Ask now — not at 4:59.</p>
+    <div class="hw-stamp">Get it in by 5pm!</div>
+    <p class="hw-footer">Questions? Ask now — not at 4:59.</p>
   </div>
+</div>
 
-<script>
-  function updateClock() {
-    const now = new Date();
-    const deadline = new Date();
-    deadline.setHours(17, 0, 0, 0);
-
-    let diff = deadline - now;
-    const clockEl = document.getElementById('clock');
-    const timerEl = document.getElementById('timer');
-
-    if (diff <= 0) {
-      clockEl.textContent = "TIME'S UP!";
-      timerEl.classList.add('done');
-      return;
-    }
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    diff -= hours * 1000 * 60 * 60;
-    const minutes = Math.floor(diff / (1000 * 60));
-    diff -= minutes * 1000 * 60;
-    const seconds = Math.floor(diff / 1000);
-
-    const pad = n => String(n).padStart(2, '0');
-    clockEl.textContent = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-</script>
 </body>
 </html>
