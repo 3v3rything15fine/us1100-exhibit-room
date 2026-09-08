@@ -146,6 +146,73 @@
     border: 1px solid var(--line);
     word-break: break-all;
   }
+
+  .warmup-card{ background: var(--ink); color: var(--paper); }
+  .warmup-slide{
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 18px 6px 26px;
+  }
+  .warmup-slide .kicker-dark{
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  .warmup-slide h2{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(22px, 4.5vw, 32px);
+    margin: 0 0 16px;
+    color: var(--paper);
+  }
+  .warmup-slide p{
+    font-size: clamp(15px, 2.2vw, 18px);
+    color: #D9D4C4;
+    max-width: 64ch;
+    margin: 0;
+  }
+  .warmup-nav{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 4px;
+  }
+  .warmup-nav button{
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 16px;
+    background: transparent;
+    border: 1px solid #6B6858;
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .warmup-nav button:hover{ border-color: var(--paper); }
+  .warmup-nav button:disabled{ opacity: .35; cursor: not-allowed; }
+  .warmup-nav .warmup-count{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #A6A290;
+    margin-left: auto;
+  }
+  .warmup-nav .fullscreen-btn{ border-color: var(--gold); color: var(--gold); }
+
+  .warmup-card:fullscreen{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px;
+  }
+  .warmup-card:fullscreen .warmup-slide{ max-width: 900px; }
+  .warmup-card:fullscreen .warmup-slide h2{ font-size: clamp(32px, 5vw, 56px); }
+  .warmup-card:fullscreen .warmup-slide p{ font-size: clamp(20px, 2.6vw, 26px); max-width: 80ch; }
+  .warmup-card:fullscreen > h2:first-child{ display: none; }
 </style>
 </head>
 <body>
@@ -161,6 +228,21 @@
 <div class="wrap" id="panel" hidden>
   <h1>Presenter Console</h1>
   <p class="kicker">Whose Formula Is This? — US 1100 Module 3</p>
+
+  <div class="card warmup-card" id="warmup-card">
+    <h2 style="color:var(--paper)">Warm-up — before phones come out</h2>
+    <div class="warmup-slide" id="warmup-slide">
+      <p class="kicker-dark" id="warmup-kicker"></p>
+      <h2 id="warmup-title"></h2>
+      <p id="warmup-body"></p>
+    </div>
+    <div class="warmup-nav">
+      <button type="button" id="warmup-prev">&larr; Prev</button>
+      <button type="button" id="warmup-next">Next &rarr;</button>
+      <button type="button" class="fullscreen-btn" id="warmup-fullscreen">Present full-screen</button>
+      <span class="warmup-count" id="warmup-count"></span>
+    </div>
+  </div>
 
   <div class="card">
     <h2>Reveal exhibits</h2>
@@ -199,6 +281,57 @@
 <script src="/qrcode-lib.js"></script>
 <script>
 (function(){
+  // ---------- WARM-UP SLIDES (presenter-only, no student sync needed) ----------
+  var WARMUP_SLIDES = [
+    {
+      kicker: 'WARM-UP · 1 OF 4',
+      title: 'Before we open the tools…',
+      body: 'Module 3 gave you six note-taking methods, a 5-day exam plan, a 168-hour weekly grid, and a list of campus resources. All of it assumes something about who’s reading it. Let’s name the lens we’re using today before we go looking for that.'
+    },
+    {
+      kicker: 'THE BANKING MODEL',
+      title: 'Knowledge as a deposit',
+      body: 'Freire’s term for education that treats the student as an empty container and the teacher — or the module — as the one depositing the "right" technique in. The technique is framed as neutral and universal: it’s supposed to work the same for everyone, because it quietly assumes everyone starts from the same place.'
+    },
+    {
+      kicker: 'THE ALTERNATIVE',
+      title: 'Liberatory / problem-posing education',
+      body: 'Freire’s alternative: student and teacher investigate together. A "best practice" isn’t a deposit to accept — it’s a claim to test against your actual conditions. Your week. Your job. Your schooling before this class. Does the rule hold, or does it only hold for whoever it was built around?'
+    },
+    {
+      kicker: 'TODAY’S QUESTION',
+      title: 'Not "does it work?" — "whose week does it assume?"',
+      body: 'Exhibit A: sort the tools by whether they assume or teach. Exhibit B: stress-test the "2–3 hours per class hour" rule against a real student’s week. Exhibit C: look at what gets called an "advantage" instead of a baseline. Watch for the word "just."'
+    }
+  ];
+  var warmupIndex = 0;
+
+  function renderWarmup(){
+    var s = WARMUP_SLIDES[warmupIndex];
+    document.getElementById('warmup-kicker').textContent = s.kicker;
+    document.getElementById('warmup-title').textContent = s.title;
+    document.getElementById('warmup-body').textContent = s.body;
+    document.getElementById('warmup-count').textContent = (warmupIndex + 1) + ' / ' + WARMUP_SLIDES.length;
+    document.getElementById('warmup-prev').disabled = warmupIndex === 0;
+    document.getElementById('warmup-next').disabled = warmupIndex === WARMUP_SLIDES.length - 1;
+  }
+  document.getElementById('warmup-prev').addEventListener('click', function(){
+    if(warmupIndex > 0){ warmupIndex--; renderWarmup(); }
+  });
+  document.getElementById('warmup-next').addEventListener('click', function(){
+    if(warmupIndex < WARMUP_SLIDES.length - 1){ warmupIndex++; renderWarmup(); }
+  });
+  document.getElementById('warmup-fullscreen').addEventListener('click', function(){
+    var el = document.getElementById('warmup-card');
+    if(el.requestFullscreen) el.requestFullscreen().catch(function(){});
+  });
+  document.addEventListener('keydown', function(e){
+    if(document.activeElement && document.activeElement.tagName === 'INPUT') return;
+    if(e.key === 'ArrowRight') document.getElementById('warmup-next').click();
+    if(e.key === 'ArrowLeft') document.getElementById('warmup-prev').click();
+  });
+  renderWarmup();
+
   var TOKEN_KEY = 'us1100-presenter-token';
   var token = localStorage.getItem(TOKEN_KEY) || '';
 
