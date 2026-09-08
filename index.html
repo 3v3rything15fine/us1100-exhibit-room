@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Formula Is This? — US 1100 Exhibit Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F2EFE7;
+    --paper-dark: #E7E1D2;
+    --ink: #23241F;
+    --ink-soft: #55534A;
+    --teal: #1E3D39;
+    --gold: #B9862E;
+    --alarm: #B23A2E;
+    --line: #C9C2AE;
+    --seg-class: #1E3D39;
+    --seg-study: #B9862E;
+    --seg-job: #6B4C9A;
+    --seg-commute: #7C7566;
+    --seg-chores: #9CA986;
+    --seg-sleep: #3E5C76;
+    --seg-free: #4C7A52;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: var(--teal); }
+
+  .wrap{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  header.masthead{
+    padding: 36px 0 20px;
+    border-bottom: 3px solid var(--ink);
+  }
+
+  header.masthead .kicker{
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+    margin: 0 0 6px;
+  }
+
+  header.masthead h1{
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(28px, 6vw, 42px);
+    margin: 0 0 10px;
+    line-height: 1.1;
+  }
+
+  header.masthead p{
+    margin: 0;
+    max-width: 56ch;
+    color: var(--ink-soft);
+  }
+
+  nav.jumpto{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    gap: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    margin: 0 -20px 0;
+    padding: 0 20px;
+  }
+  nav.jumpto a{
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding: 12px 4px;
+    border-bottom: 3px solid transparent;
+  }
+  nav.jumpto a:hover, nav.jumpto a:focus-visible{ color: var(--ink); border-bottom-color: var(--gold); }
+
+  section.exhibit{
+    margin-top: 56px;
+    scroll-margin-top: 56px;
+  }
+
+  .exhibit-head{
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .exhibit-tag{
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 3px 8px;
+    letter-spacing: 0.03em;
+  }
+  .exhibit-head h2{
+    font-family: var(--serif);
+    font-size: 24px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .instructions{
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 22px;
+  }
+
+  /* Exhibit A: card sort */
+  .tally{
+    display:flex;
+    gap: 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .tally span.dot{ display:inline-block; width:9px; height:9px; margin-right:6px; border-radius:1px; }
+
+  .card-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  button.tool-card{
+    text-align: left;
+    font-family: var(--sans);
+    background: var(--paper-dark);
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--line);
+    padding: 14px 14px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  button.tool-card:hover, button.tool-card:focus-visible{
+    border-color: var(--ink);
+    outline: none;
+  }
+  button.tool-card .name{
+    font-weight: 600;
+    display:block;
+    margin-bottom: 4px;
+    font-size: 15px;
+  }
+  button.tool-card .desc{
+    font-size: 13px;
+    color: var(--ink-soft);
+    display:block;
+  }
+  button.tool-card .state{
+    display:block;
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--ink-soft);
+  }
+  button.tool-card[data-state="assumes"]{ border-left-color: var(--teal); background: #E4E9E6; }
+  button.tool-card[data-state="assumes"] .state{ color: var(--teal); }
+  button.tool-card[data-state="teaches"]{ border-left-color: var(--gold); background: #F3E9D3; }
+  button.tool-card[data-state="teaches"] .state{ color: var(--gold); }
+
+  .discuss{
+    margin-top: 22px;
+    padding: 14px 16px;
+    background: var(--paper-dark);
+    border-left: 3px solid var(--ink);
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .discuss strong{ color: var(--ink); }
+
+  /* Exhibit B: stress test */
+  .profile-toggle{
+    display: flex;
+    border: 1px solid var(--ink);
+    margin-bottom: 18px;
+    width: fit-content;
+  }
+  .profile-toggle button{
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 9px 16px;
+    background: var(--paper);
+    border: none;
+    cursor: pointer;
+    color: var(--ink);
+    border-right: 1px solid var(--ink);
+  }
+  .profile-toggle button:last-child{ border-right: none; }
+  .profile-toggle button[aria-pressed="true"]{ background: var(--ink); color: var(--paper); }
+
+  .profile-note{
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+  }
+
+  .disruption{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    margin-bottom: 22px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .disruption input{ width:16px; height:16px; }
+
+  .big-number{
+    font-family: var(--serif);
+    font-size: clamp(38px, 9vw, 58px);
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+  }
+  .big-number-label{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: 6px 0 20px;
+  }
+
+  .bar{
+    display:flex;
+    width: 100%;
+    height: 46px;
+    border: 1px solid var(--ink);
+    overflow: hidden;
+  }
+  .bar .seg{
+    height: 100%;
+    transition: width .4s ease;
+    min-width: 0;
+  }
+
+  .legend{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px 16px;
+    margin-top: 16px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+  }
+  .legend .row{ display:flex; align-items:center; gap:8px; }
+  .legend .swatch{ width:11px; height:11px; flex: 0 0 auto; }
+
+  .callout{
+    margin-top: 22px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--alarm);
+    background: #F6E9E7;
+    font-size: 14px;
+  }
+  .callout.ok{ border-left-color: var(--seg-free); background: #E9EFE7; }
+
+  /* Exhibit C */
+  .recap{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 22px;
+  }
+  blockquote{
+    font-family: var(--serif);
+    font-size: clamp(20px, 4vw, 26px);
+    line-height: 1.35;
+    margin: 0 0 8px;
+    padding: 0 0 0 20px;
+    border-left: 4px solid var(--gold);
+  }
+  .cite{
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin: 0 0 26px;
+  }
+  ol.prompts{
+    padding-left: 20px;
+    margin: 0;
+  }
+  ol.prompts li{ margin-bottom: 12px; }
+
+  footer.endstamp{
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">US 1100 — MODULE 3 — IN-CLASS EXHIBIT ROOM</p>
+    <h1>Whose Formula Is This?</h1>
+    <p>Three pieces of evidence from this week's study-skills module. Work through them in order with your table. Nobody's grading the sort — the point is what you notice.</p>
+  </header>
+
+  <nav class="jumpto" aria-label="Jump to exhibit">
+    <a href="#exhibit-a">Exhibit A</a>
+    <a href="#exhibit-b">Exhibit B</a>
+    <a href="#exhibit-c">Exhibit C</a>
+  </nav>
+
+  <!-- EXHIBIT A -->
+  <section class="exhibit" id="exhibit-a">
+    <div class="exhibit-head">
+      <span class="exhibit-tag">EXHIBIT A</span>
+      <h2>Sort the tools</h2>
+    </div>
+    <p class="instructions">Eight study tools from this week's module. Tap each one to file it: does it <strong>assume</strong> you already know how to study, or does it actually <strong>teach</strong> you something you didn't already know how to do? Tap again to change your answer.</p>
+
+    <div class="tally" id="tally">
+      <span><span class="dot" style="background:var(--teal)"></span>Assumes: <span id="count-assumes">0</span></span>
+      <span><span class="dot" style="background:var(--gold)"></span>Teaches: <span id="count-teaches">0</span></span>
+      <span><span class="dot" style="background:var(--line)"></span>Unsorted: <span id="count-unsorted">8</span></span>
+    </div>
+
+    <div class="card-grid" id="card-grid"></div>
+
+    <div class="discuss">
+      <strong>Table talk:</strong> What do the tools in the "assumes" pile have in common? Whose study habits, resources, or prior schooling do they take for granted?
+    </div>
+  </section>
+
+  <!-- EXHIBIT B -->
+  <section class="exhibit" id="exhibit-b">
+    <div class="exhibit-head">
+      <span class="exhibit-tag">EXHIBIT B</span>
+      <h2>Stress-test the calendar</h2>
+    </div>
+    <p class="instructions">This week's Fixed-Commitment Calendar says to study 2–3 hours for every hour of class. Fair enough — but the rule doesn't know whose week it's landing on. Toggle between two students and watch what's left over.</p>
+
+    <div class="profile-toggle" role="group" aria-label="Choose a student profile">
+      <button id="btn-control" aria-pressed="true">Control Student</button>
+      <button id="btn-real" aria-pressed="false">Real Student</button>
+    </div>
+    <p class="profile-note" id="profile-note"></p>
+
+    <label class="disruption">
+      <input type="checkbox" id="disruption-toggle">
+      Something comes up this week (+12 hrs — a shift covers, a car repair, a family thing)
+    </label>
+
+    <p class="big-number" id="leftover-number">0</p>
+    <p class="big-number-label" id="leftover-label">HOURS LEFT, OUT OF 168, FOR EVERYTHING ELSE</p>
+
+    <div class="bar" id="bar" role="img" aria-label="Weekly hour breakdown"></div>
+
+    <div class="legend" id="legend"></div>
+
+    <div id="callout-box"></div>
+  </section>
+
+  <!-- EXHIBIT C -->
+  <section class="exhibit" id="exhibit-c">
+    <div class="exhibit-head">
+      <span class="exhibit-tag">EXHIBIT C</span>
+      <h2>The fine print</h2>
+    </div>
+
+    <p class="recap" id="recap"></p>
+
+    <blockquote>"Any time a professor willingly gives you an advantage in a course, use it!"</blockquote>
+    <p class="cite">— this week's Note-Taking handout, on instructor-provided materials</p>
+
+    <p class="instructions">Read that line again. It calls clear instructions and materials an <em>advantage</em> — something a professor chooses to hand out, not something you're owed.</p>
+
+    <ol class="prompts">
+      <li>Who decided that clarity is a gift instead of a baseline? What changes if you flip that assumption?</li>
+      <li>Go back to Exhibit A. Which tools in your "assumes" pile hand out that same kind of unearned advantage — to whoever already happens to know the unwritten rules?</li>
+      <li>Rewrite the quote as if professors owed students clear expectations. Say it out loud to your table.</li>
+    </ol>
+  </section>
+
+  <footer class="endstamp">
+    US 1100 · Module 3 in-class session · built for one-time classroom use
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  // ---------- EXHIBIT A ----------
+  var tools = [
+    { id:'fiveday', name:'5-Day Study Plan', desc:'A five-day countdown for exam prep: chunk material into A/B/C/D piles and drill them on a schedule.' },
+    { id:'fixedcal', name:'Fixed-Commitment Calendar', desc:'Block out all 168 hours of your week and see what is left for studying.' },
+    { id:'cornell', name:'Cornell Notes', desc:'A two-column note format: questions on one side, details on the other.' },
+    { id:'outline', name:'Outline Method', desc:'The note style most people already use — headings and sub-points.' },
+    { id:'tnotes', name:'T-Notes for Problem-Based Classes', desc:'Work a problem on one side, explain your reasoning on the other.' },
+    { id:'flowchart', name:'Flow Charts', desc:'Map how ideas branch and connect during a discussion-heavy class.' },
+    { id:'highlight', name:'Highlighting', desc:'Mark key terms in color as you read, then build a key for what each color means.' },
+    { id:'summary', name:'The Summary Method', desc:'Read a paragraph, then summarize it in one phrase before moving on.' }
+  ];
+
+  var states = {}; // id -> null | 'assumes' | 'teaches'
+  tools.forEach(function(t){ states[t.id] = null; });
+
+  var grid = document.getElementById('card-grid');
+  tools.forEach(function(t){
+    var btn = document.createElement('button');
+    btn.className = 'tool-card';
+    btn.type = 'button';
+    btn.dataset.id = t.id;
+    btn.dataset.state = '';
+    btn.innerHTML = '<span class="name">' + t.name + '</span><span class="desc">' + t.desc + '</span><span class="state">tap to sort</span>';
+    btn.addEventListener('click', function(){
+      var order = [null, 'assumes', 'teaches'];
+      var next = order[(order.indexOf(states[t.id]) + 1) % order.length];
+      states[t.id] = next;
+      render();
+    });
+    grid.appendChild(btn);
+  });
+
+  function render(){
+    var assumes = 0, teaches = 0, unsorted = 0;
+    grid.querySelectorAll('.tool-card').forEach(function(btn){
+      var id = btn.dataset.id;
+      var s = states[id];
+      btn.dataset.state = s || '';
+      var label = btn.querySelector('.state');
+      if(s === 'assumes'){ label.textContent = 'assumes you already know'; assumes++; }
+      else if(s === 'teaches'){ label.textContent = 'teaches something new'; teaches++; }
+      else { label.textContent = 'tap to sort'; unsorted++; }
+    });
+    document.getElementById('count-assumes').textContent = assumes;
+    document.getElementById('count-teaches').textContent = teaches;
+    document.getElementById('count-unsorted').textContent = unsorted;
+    document.getElementById('recap').textContent =
+      'Your table sorted ' + assumes + ' of 8 tools as "assumes you already know" and ' + teaches + ' as "teaches something new."' +
+      (unsorted > 0 ? ' (' + unsorted + ' still unsorted — go back to Exhibit A.)' : '');
+  }
+  render();
+
+  // ---------- EXHIBIT B ----------
+  var PROFILES = {
+    control: {
+      label: 'Control Student',
+      note: '15 credit hours. No job. Lives on campus, no commute.',
+      cls: 15, job: 0, commute: 0, chores: 14, sleepBase: 56
+    },
+    real: {
+      label: 'Real Student',
+      note: '13 credit hours. Part-time job. Commutes from home.',
+      cls: 13, job: 32, commute: 10, chores: 14, sleepBase: 49
+    }
+  };
+
+  var currentProfile = 'control';
+
+  var SEG_COLORS = {
+    cls: getCss('--seg-class'), job: getCss('--seg-job'), commute: getCss('--seg-commute'),
+    chores: getCss('--seg-chores'), sleep: getCss('--seg-sleep'), study: getCss('--seg-study'), free: getCss('--seg-free')
+  };
+  var SEG_LABELS = {
+    cls: 'Class', job: 'Job', commute: 'Commute', chores: 'Chores / eating',
+    sleep: 'Sleep', study: 'Recommended study (2.5× class hrs)', free: 'Everything else'
+  };
+
+  function getCss(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function compute(profileKey, disruption){
+    var p = PROFILES[profileKey];
+    var extra = disruption ? 12 : 0;
+    var study = p.cls * 2.5;
+    var sleep = p.sleepBase;
+    var fixed = p.cls + p.job + p.commute + p.chores + sleep + extra;
+    var free = 168 - fixed;
+    var leftover = free - study;
+    var borrowed = 0;
+    if(leftover < 0){
+      var floor = 28; // 4 hrs/night minimum
+      var available = sleep - floor;
+      borrowed = Math.max(0, Math.min(available, -leftover));
+      sleep -= borrowed;
+      leftover += borrowed;
+    }
+    return {
+      cls: p.cls, job: p.job, commute: p.commute, chores: p.chores,
+      sleep: sleep, study: study, leftover: Math.max(leftover, 0),
+      borrowed: borrowed, impossible: leftover < 0, label: p.label, note: p.note
+    };
+  }
+
+  function renderExhibitB(){
+    var disruption = document.getElementById('disruption-toggle').checked;
+    var r = compute(currentProfile, disruption);
+
+    document.getElementById('btn-control').setAttribute('aria-pressed', currentProfile === 'control');
+    document.getElementById('btn-real').setAttribute('aria-pressed', currentProfile === 'real');
+    document.getElementById('profile-note').textContent = r.note;
+
+    var order = ['cls','job','commute','chores','sleep','study','leftover'];
+    var keyMap = { cls:'cls', job:'job', commute:'commute', chores:'chores', sleep:'sleep', study:'study', leftover:'free' };
+    var bar = document.getElementById('bar');
+    bar.innerHTML = '';
+    order.forEach(function(k){
+      var val = r[k];
+      if(val <= 0) return;
+      var seg = document.createElement('div');
+      seg.className = 'seg';
+      seg.style.width = (val / 168 * 100) + '%';
+      seg.style.background = SEG_COLORS[keyMap[k]];
+      seg.title = SEG_LABELS[keyMap[k]] + ': ' + round1(val) + ' hrs';
+      bar.appendChild(seg);
+    });
+
+    var legend = document.getElementById('legend');
+    legend.innerHTML = '';
+    var legendData = [
+      ['cls', r.cls], ['job', r.job], ['commute', r.commute],
+      ['chores', r.chores], ['sleep', r.sleep], ['study', r.study], ['free', r.leftover]
+    ];
+    legendData.forEach(function(pair){
+      var key = pair[0], val = pair[1];
+      if(val <= 0) return;
+      var row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = '<span class="swatch" style="background:' + SEG_COLORS[key] + '"></span>' + SEG_LABELS[key] + ': ' + round1(val) + 'h';
+      legend.appendChild(row);
+    });
+
+    var num = document.getElementById('leftover-number');
+    num.textContent = round1(r.leftover);
+    num.style.color = r.leftover < 10 ? getCss('--alarm') : (r.leftover < 30 ? getCss('--gold') : getCss('--seg-free'));
+
+    var box = document.getElementById('callout-box');
+    box.innerHTML = '';
+    var callout = document.createElement('div');
+    if(r.borrowed > 0){
+      callout.className = 'callout';
+      callout.innerHTML = '<strong>' + round1(r.borrowed) + ' hours borrowed from sleep</strong> just to fit the recommended study time in. The calendar didn\'t say that part.';
+    } else if(r.leftover < 10){
+      callout.className = 'callout';
+      callout.innerHTML = '<strong>' + round1(r.leftover) + ' hours a week</strong> for friends, rest, laundry, sickness, or anything unplanned. That\'s the whole cushion.';
+    } else {
+      callout.className = 'callout ok';
+      callout.innerHTML = round1(r.leftover) + ' hours of open room in the week — the formula has space to work here.';
+    }
+    box.appendChild(callout);
+  }
+
+  function round1(n){ return Math.round(n * 10) / 10; }
+
+  document.getElementById('btn-control').addEventListener('click', function(){ currentProfile = 'control'; renderExhibitB(); });
+  document.getElementById('btn-real').addEventListener('click', function(){ currentProfile = 'real'; renderExhibitB(); });
+  document.getElementById('disruption-toggle').addEventListener('change', renderExhibitB);
+
+  renderExhibitB();
+})();
+</script>
+
+</body>
+</html>
