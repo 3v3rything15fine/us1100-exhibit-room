@@ -40,13 +40,6 @@
     min-height: 100vh; padding: 24px;
   }
 
-  .offline-note{
-    position: fixed; top: 12px; left: 12px; z-index: 30;
-    font-family: var(--mono); font-size: 11px; color: #E8C9A8;
-    background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 999px;
-    max-width: 260px;
-  }
-
   .slide-deck{
     width: 100%; max-width: 900px;
     background: var(--ink); color: var(--paper);
@@ -133,6 +126,35 @@
   }
   .demo-cite{ font-family: var(--mono); font-size: 11px; color: #C9B8A4; margin-top: 10px; }
 
+  /* Debrief slides */
+  .question-list{ list-style: none; margin: 24px 0 0; padding: 0; display: grid; gap: 14px; }
+  .question-list[hidden]{ display: none; }
+  .question-list li{
+    display: flex; gap: 14px; align-items: flex-start;
+    font-size: clamp(16px, 2vw, 19px); color: #F1E9DB;
+    background: #35281F; border-left: 6px solid var(--gold);
+    border-radius: var(--radius-sm); padding: 14px 18px;
+  }
+  .slide-deck:fullscreen .question-list li{ font-size: clamp(19px, 2.3vw, 23px); }
+  .question-list li .num{
+    font-family: var(--mono); font-weight: 600; color: var(--gold); flex: 0 0 auto;
+  }
+
+  /* Closing slide */
+  .closing-cards{ display: grid; gap: 16px; margin-top: 24px; }
+  .closing-cards[hidden]{ display: none; }
+  .closing-card{
+    background: #35281F; border: 2px solid var(--teal);
+    border-radius: var(--radius-sm); padding: 18px 20px;
+  }
+  .closing-card .tag{
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+    color: var(--teal); margin: 0 0 8px;
+  }
+  .closing-card p{ margin: 0; font-size: clamp(15px, 1.9vw, 18px); color: #F1E9DB; }
+  .closing-card.alert{ border-color: var(--alarm); }
+  .closing-card.alert .tag{ color: var(--alarm); }
+
   .slide-nav{
     display: flex; align-items: center; gap: 12px; margin-top: 28px;
     padding-top: 18px; border-top: 1px solid #4A3B2F;
@@ -152,8 +174,6 @@
 </head>
 <body>
 
-<p class="offline-note">Live-sync backend is offline today — pacing works by handing out each exhibit's QR/link, not a shared control panel.</p>
-
 <div class="slide-deck" id="slide-deck">
   <div class="slide-body">
     <p class="kicker-dark" id="s-kicker"></p>
@@ -169,6 +189,8 @@
         <div id="s-demo-mount"></div>
       </div>
     </div>
+    <ul class="question-list" id="s-questions" hidden></ul>
+    <div class="closing-cards" id="s-closing" hidden></div>
   </div>
   <div class="slide-nav">
     <button type="button" id="s-prev">&larr; Prev</button>
@@ -184,7 +206,7 @@
   var SLIDES = [
     {
       type: 'text',
-      kicker: 'WARM-UP · 1 OF 7',
+      kicker: 'WARM-UP',
       title: 'Before we open the tools…',
       body: 'Module 3 gave you six note-taking methods, a 5-day exam plan, a 168-hour weekly grid, and a list of campus resources. All of it assumes something about who’s reading it. Let’s name the lens we’re using today before we go looking for that.'
     },
@@ -204,7 +226,7 @@
       type: 'text',
       kicker: 'HOW TODAY WORKS',
       title: 'One exhibit at a time',
-      body: 'The next three slides each have a QR code — scan it when I say go, not before. Work through it with your table, then wait here for the next code. Each slide also has a live demo so you can see the mechanic before you touch your own phone.'
+      body: 'The next slides each have a QR code — scan it when I say go, not before. Work through it with your table, then wait here for the next code. Each slide also has a live demo so you can see the mechanic before you touch your own phone.'
     },
     {
       type: 'exhibit',
@@ -215,6 +237,16 @@
       demo: 'a'
     },
     {
+      type: 'debrief',
+      kicker: 'DEBRIEF · EXHIBIT A',
+      title: 'Bring it back to the room',
+      questions: [
+        'Show of hands: who sorted more than half the tools as "assumes"?',
+        'What\'s one tool your table argued about?',
+        'Whose prior schooling do the "assumes" tools quietly reward?'
+      ]
+    },
+    {
       type: 'exhibit',
       kicker: 'EXHIBIT B',
       title: 'Stress-test the calendar',
@@ -223,12 +255,40 @@
       demo: 'b'
     },
     {
+      type: 'debrief',
+      kicker: 'DEBRIEF · EXHIBIT B',
+      title: 'What did the calendar admit?',
+      questions: [
+        'Who watched Real Student\'s leftover hours drop into single digits?',
+        'Did anyone borrow hours from sleep? How many?',
+        'Whose week does "2–3 hours per class hour" actually describe?'
+      ]
+    },
+    {
       type: 'exhibit',
       kicker: 'EXHIBIT C',
       title: 'The fine print',
       body: 'Scan when ready.',
       url: '/exhibit-c.html',
       demo: 'c'
+    },
+    {
+      type: 'debrief',
+      kicker: 'DEBRIEF · EXHIBIT C',
+      title: 'Whose baseline is it?',
+      questions: [
+        'Read your table\'s rewritten quote out loud — pick one to share with the room.',
+        'Which Exhibit A tools hand out that same kind of unearned advantage?'
+      ]
+    },
+    {
+      type: 'closing',
+      kicker: 'LOOKING AHEAD',
+      title: 'Before next class',
+      cards: [
+        { tag: 'NEXT WEEK', text: 'Module 4 turns to career and major exploration.', alert: false },
+        { tag: 'THE WEEK AFTER — ADVISING WEEK', text: 'You\'ll need to turn in proof of an advising appointment. Schedule yours this week.', alert: true }
+      ]
     }
   ];
 
@@ -387,14 +447,22 @@
     var s = SLIDES[idx];
     document.getElementById('s-kicker').textContent = s.kicker;
     document.getElementById('s-title').textContent = s.title;
-    document.getElementById('s-body').textContent = s.body;
+    document.getElementById('s-body').textContent = s.body || '';
     document.getElementById('s-count').textContent = (idx + 1) + ' / ' + SLIDES.length;
     document.getElementById('s-prev').disabled = idx === 0;
     document.getElementById('s-next').disabled = idx === SLIDES.length - 1;
 
     var exhibitRow = document.getElementById('s-exhibit');
+    var questionList = document.getElementById('s-questions');
+    var closingCards = document.getElementById('s-closing');
     var mount = document.getElementById('s-demo-mount');
     mount.innerHTML = '';
+    questionList.innerHTML = '';
+    closingCards.innerHTML = '';
+
+    exhibitRow.hidden = true;
+    questionList.hidden = true;
+    closingCards.hidden = true;
 
     if(s.type === 'exhibit'){
       exhibitRow.hidden = false;
@@ -407,8 +475,33 @@
       if(s.demo === 'a') mountDemoA(mount);
       else if(s.demo === 'b') mountDemoB(mount);
       else if(s.demo === 'c') mountDemoC(mount);
-    } else {
-      exhibitRow.hidden = true;
+    } else if(s.type === 'debrief'){
+      questionList.hidden = false;
+      s.questions.forEach(function(q, i){
+        var li = document.createElement('li');
+        var num = document.createElement('span');
+        num.className = 'num';
+        num.textContent = (i + 1) + '.';
+        var text = document.createElement('span');
+        text.textContent = q;
+        li.appendChild(num);
+        li.appendChild(text);
+        questionList.appendChild(li);
+      });
+    } else if(s.type === 'closing'){
+      closingCards.hidden = false;
+      s.cards.forEach(function(c){
+        var card = document.createElement('div');
+        card.className = 'closing-card' + (c.alert ? ' alert' : '');
+        var tag = document.createElement('p');
+        tag.className = 'tag';
+        tag.textContent = c.tag;
+        var text = document.createElement('p');
+        text.textContent = c.text;
+        card.appendChild(tag);
+        card.appendChild(text);
+        closingCards.appendChild(card);
+      });
     }
   }
 
