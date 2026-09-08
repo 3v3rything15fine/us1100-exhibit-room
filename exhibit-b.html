@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Formula Is This? — Exhibit B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F2EFE7;
+    --paper-dark: #E7E1D2;
+    --ink: #23241F;
+    --ink-soft: #55534A;
+    --teal: #1E3D39;
+    --gold: #B9862E;
+    --alarm: #B23A2E;
+    --line: #C9C2AE;
+    --seg-class: #1E3D39;
+    --seg-study: #B9862E;
+    --seg-job: #6B4C9A;
+    --seg-commute: #7C7566;
+    --seg-chores: #9CA986;
+    --seg-sleep: #3E5C76;
+    --seg-free: #4C7A52;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: var(--teal); }
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 0 20px 80px; }
+
+  header.masthead{ padding: 36px 0 20px; border-bottom: 3px solid var(--ink); }
+  header.masthead .kicker{
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.02em;
+    color: var(--ink-soft); margin: 0 0 6px;
+  }
+  header.masthead h1{
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(28px, 6vw, 42px); margin: 0 0 10px; line-height: 1.1;
+  }
+  header.masthead p{ margin: 0; max-width: 56ch; color: var(--ink-soft); }
+
+  .exhibit-head{
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 1px solid var(--ink); padding-bottom: 10px;
+    margin: 32px 0 18px;
+  }
+  .exhibit-tag{
+    font-family: var(--mono); font-size: 12px; background: var(--ink);
+    color: var(--paper); padding: 3px 8px; letter-spacing: 0.03em;
+  }
+  .exhibit-head h2{ font-family: var(--serif); font-size: 24px; margin: 0; font-weight: 600; }
+
+  .instructions{ color: var(--ink-soft); max-width: 62ch; margin: 0 0 22px; }
+
+  .concept-box{
+    margin-top: 16px; background: var(--paper-dark); border: 1px solid var(--line); padding: 4px 16px;
+  }
+  .concept-box summary{ cursor: pointer; font-family: var(--mono); font-size: 13px; padding: 10px 0; color: var(--ink-soft); }
+  .concept-box[open] summary{ color: var(--ink); }
+  .concept-box p{ font-size: 14px; margin: 0 0 14px; }
+  .concept-box p strong{ color: var(--teal); }
+
+  .profile-toggle{ display: flex; border: 1px solid var(--ink); margin-bottom: 18px; width: fit-content; }
+  .profile-toggle button{
+    font-family: var(--mono); font-size: 13px; padding: 9px 16px;
+    background: var(--paper); border: none; cursor: pointer;
+    color: var(--ink); border-right: 1px solid var(--ink);
+  }
+  .profile-toggle button:last-child{ border-right: none; }
+  .profile-toggle button[aria-pressed="true"]{ background: var(--ink); color: var(--paper); }
+
+  .profile-note{ font-size: 13px; color: var(--ink-soft); margin: 0 0 20px; }
+
+  .disruption{
+    display:flex; align-items:center; gap: 10px; font-family: var(--mono);
+    font-size: 13px; margin-bottom: 22px; cursor: pointer; user-select: none;
+  }
+  .disruption input{ width:16px; height:16px; }
+
+  .big-number{ font-family: var(--serif); font-size: clamp(38px, 9vw, 58px); font-weight: 700; line-height: 1; margin: 0; }
+  .big-number-label{ font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 6px 0 20px; }
+
+  .bar{ display:flex; width: 100%; height: 46px; border: 1px solid var(--ink); overflow: hidden; }
+  .bar .seg{ height: 100%; transition: width .4s ease; min-width: 0; }
+
+  .legend{
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px 16px; margin-top: 16px; font-family: var(--mono); font-size: 12.5px;
+  }
+  .legend .row{ display:flex; align-items:center; gap:8px; }
+  .legend .swatch{ width:11px; height:11px; flex: 0 0 auto; }
+
+  .callout{
+    margin-top: 22px; padding: 14px 16px; border-left: 3px solid var(--alarm);
+    background: #F6E9E7; font-size: 14px;
+  }
+  .callout.ok{ border-left-color: var(--seg-free); background: #E9EFE7; }
+
+  .discuss{
+    margin-top: 22px; padding: 14px 16px; background: var(--paper-dark);
+    border-left: 3px solid var(--ink); font-size: 14px; color: var(--ink-soft);
+  }
+  .discuss strong{ color: var(--ink); }
+  .discuss.starters{ border-left-color: var(--gold); }
+
+  .next-box{
+    margin-top: 40px; padding: 20px; text-align: center;
+    border: 1px dashed var(--line); background: var(--paper-dark);
+  }
+  .next-box p{ margin: 0 0 12px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
+  .next-link{
+    display: inline-block; font-family: var(--mono); font-size: 14px;
+    padding: 12px 22px; background: var(--ink); color: var(--paper);
+    text-decoration: none; border: 1px solid var(--ink);
+  }
+  .next-link:hover{ background: var(--teal); border-color: var(--teal); }
+  .back-link{ font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+
+  footer.endstamp{
+    margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 12px; color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">US 1100 — MODULE 3 — IN-CLASS EXHIBIT ROOM — PART 2 OF 3</p>
+    <h1>Whose Formula Is This?</h1>
+    <p><a class="back-link" href="index.html">← Exhibit A</a></p>
+  </header>
+
+  <details class="concept-box">
+    <summary>Reminder: the lens we're using today</summary>
+    <p><strong>Banking model</strong> (Freire) — the module deposits a "correct," universal technique into a student treated as a neutral, empty container. The technique is presented as working the same for everyone.</p>
+    <p><strong>Liberatory / problem-posing model</strong> — student and instructor investigate together, testing a rule against real conditions instead of accepting it as neutral. A "best practice" is a claim to test, not a deposit to accept.</p>
+  </details>
+
+  <div class="exhibit-head">
+    <span class="exhibit-tag">EXHIBIT B</span>
+    <h2>Stress-test the calendar</h2>
+  </div>
+  <p class="instructions">This week's Fixed-Commitment Calendar says to study 2–3 hours for every hour of class. Fair enough — but the rule doesn't know whose week it's landing on. Toggle between two students and watch what's left over.</p>
+
+  <div class="profile-toggle" role="group" aria-label="Choose a student profile">
+    <button id="btn-control" aria-pressed="true">Control Student</button>
+    <button id="btn-real" aria-pressed="false">Real Student</button>
+  </div>
+  <p class="profile-note" id="profile-note"></p>
+
+  <label class="disruption">
+    <input type="checkbox" id="disruption-toggle">
+    Something comes up this week (+12 hrs — a shift covers, a car repair, a family thing)
+  </label>
+
+  <p class="big-number" id="leftover-number">0</p>
+  <p class="big-number-label" id="leftover-label">HOURS LEFT, OUT OF 168, FOR EVERYTHING ELSE</p>
+
+  <div class="bar" id="bar" role="img" aria-label="Weekly hour breakdown"></div>
+
+  <div class="legend" id="legend"></div>
+
+  <div id="callout-box"></div>
+
+  <div class="discuss starters">
+    <strong>While you toggle:</strong> Switch to Real Student and check the disruption box. What's the first thing you'd personally cut — sleep, class, or the job? The calendar calls a disruption "something that comes up" — how often does something come up for you in a normal semester?
+  </div>
+
+  <div class="next-box">
+    <p>Wait for your instructor's go-ahead before continuing.</p>
+    <a class="next-link" href="exhibit-c.html">Continue to Exhibit C →</a>
+  </div>
+
+  <footer class="endstamp">
+    US 1100 · Module 3 in-class session · built for one-time classroom use
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var PROFILES = {
+    control: {
+      label: 'Control Student',
+      note: '15 credit hours. No job. Lives on campus, no commute.',
+      cls: 15, job: 0, commute: 0, chores: 14, sleepBase: 56
+    },
+    real: {
+      label: 'Real Student',
+      note: '13 credit hours. Part-time job. Commutes from home.',
+      cls: 13, job: 32, commute: 10, chores: 14, sleepBase: 49
+    }
+  };
+
+  var currentProfile = 'control';
+
+  var SEG_COLORS = {
+    cls: getCss('--seg-class'), job: getCss('--seg-job'), commute: getCss('--seg-commute'),
+    chores: getCss('--seg-chores'), sleep: getCss('--seg-sleep'), study: getCss('--seg-study'), free: getCss('--seg-free')
+  };
+  var SEG_LABELS = {
+    cls: 'Class', job: 'Job', commute: 'Commute', chores: 'Chores / eating',
+    sleep: 'Sleep', study: 'Recommended study (2.5× class hrs)', free: 'Everything else'
+  };
+
+  function getCss(varName){
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function compute(profileKey, disruption){
+    var p = PROFILES[profileKey];
+    var extra = disruption ? 12 : 0;
+    var study = p.cls * 2.5;
+    var sleep = p.sleepBase;
+    var fixed = p.cls + p.job + p.commute + p.chores + sleep + extra;
+    var free = 168 - fixed;
+    var leftover = free - study;
+    var borrowed = 0;
+    if(leftover < 0){
+      var floor = 28;
+      var available = sleep - floor;
+      borrowed = Math.max(0, Math.min(available, -leftover));
+      sleep -= borrowed;
+      leftover += borrowed;
+    }
+    return {
+      cls: p.cls, job: p.job, commute: p.commute, chores: p.chores,
+      sleep: sleep, study: study, leftover: Math.max(leftover, 0),
+      borrowed: borrowed, impossible: leftover < 0, label: p.label, note: p.note
+    };
+  }
+
+  function renderExhibitB(){
+    var disruption = document.getElementById('disruption-toggle').checked;
+    var r = compute(currentProfile, disruption);
+
+    document.getElementById('btn-control').setAttribute('aria-pressed', currentProfile === 'control');
+    document.getElementById('btn-real').setAttribute('aria-pressed', currentProfile === 'real');
+    document.getElementById('profile-note').textContent = r.note;
+
+    var order = ['cls','job','commute','chores','sleep','study','leftover'];
+    var keyMap = { cls:'cls', job:'job', commute:'commute', chores:'chores', sleep:'sleep', study:'study', leftover:'free' };
+    var bar = document.getElementById('bar');
+    bar.innerHTML = '';
+    order.forEach(function(k){
+      var val = r[k];
+      if(val <= 0) return;
+      var seg = document.createElement('div');
+      seg.className = 'seg';
+      seg.style.width = (val / 168 * 100) + '%';
+      seg.style.background = SEG_COLORS[keyMap[k]];
+      seg.title = SEG_LABELS[keyMap[k]] + ': ' + round1(val) + ' hrs';
+      bar.appendChild(seg);
+    });
+
+    var legend = document.getElementById('legend');
+    legend.innerHTML = '';
+    var legendData = [
+      ['cls', r.cls], ['job', r.job], ['commute', r.commute],
+      ['chores', r.chores], ['sleep', r.sleep], ['study', r.study], ['free', r.leftover]
+    ];
+    legendData.forEach(function(pair){
+      var key = pair[0], val = pair[1];
+      if(val <= 0) return;
+      var row = document.createElement('div');
+      row.className = 'row';
+      row.innerHTML = '<span class="swatch" style="background:' + SEG_COLORS[key] + '"></span>' + SEG_LABELS[key] + ': ' + round1(val) + 'h';
+      legend.appendChild(row);
+    });
+
+    var num = document.getElementById('leftover-number');
+    num.textContent = round1(r.leftover);
+    num.style.color = r.leftover < 10 ? getCss('--alarm') : (r.leftover < 30 ? getCss('--gold') : getCss('--seg-free'));
+
+    var box = document.getElementById('callout-box');
+    box.innerHTML = '';
+    var callout = document.createElement('div');
+    if(r.borrowed > 0){
+      callout.className = 'callout';
+      callout.innerHTML = '<strong>' + round1(r.borrowed) + ' hours borrowed from sleep</strong> just to fit the recommended study time in. The calendar didn\'t say that part.';
+    } else if(r.leftover < 10){
+      callout.className = 'callout';
+      callout.innerHTML = '<strong>' + round1(r.leftover) + ' hours a week</strong> for friends, rest, laundry, sickness, or anything unplanned. That\'s the whole cushion.';
+    } else {
+      callout.className = 'callout ok';
+      callout.innerHTML = round1(r.leftover) + ' hours of open room in the week — the formula has space to work here.';
+    }
+    box.appendChild(callout);
+  }
+
+  function round1(n){ return Math.round(n * 10) / 10; }
+
+  document.getElementById('btn-control').addEventListener('click', function(){ currentProfile = 'control'; renderExhibitB(); });
+  document.getElementById('btn-real').addEventListener('click', function(){ currentProfile = 'real'; renderExhibitB(); });
+  document.getElementById('disruption-toggle').addEventListener('change', renderExhibitB);
+
+  renderExhibitB();
+})();
+</script>
+
+</body>
+</html>

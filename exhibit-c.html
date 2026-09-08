@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whose Formula Is This? — Exhibit C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F2EFE7;
+    --paper-dark: #E7E1D2;
+    --ink: #23241F;
+    --ink-soft: #55534A;
+    --teal: #1E3D39;
+    --gold: #B9862E;
+    --alarm: #B23A2E;
+    --line: #C9C2AE;
+    --serif: 'Source Serif 4', Georgia, serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a{ color: var(--teal); }
+  .wrap{ max-width: 720px; margin: 0 auto; padding: 0 20px 80px; }
+
+  header.masthead{ padding: 36px 0 20px; border-bottom: 3px solid var(--ink); }
+  header.masthead .kicker{
+    font-family: var(--mono); font-size: 13px; letter-spacing: 0.02em;
+    color: var(--ink-soft); margin: 0 0 6px;
+  }
+  header.masthead h1{
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(28px, 6vw, 42px); margin: 0 0 10px; line-height: 1.1;
+  }
+  header.masthead p{ margin: 0; max-width: 56ch; color: var(--ink-soft); }
+
+  .exhibit-head{
+    display: flex; align-items: baseline; gap: 14px;
+    border-bottom: 1px solid var(--ink); padding-bottom: 10px;
+    margin: 32px 0 18px;
+  }
+  .exhibit-tag{
+    font-family: var(--mono); font-size: 12px; background: var(--ink);
+    color: var(--paper); padding: 3px 8px; letter-spacing: 0.03em;
+  }
+  .exhibit-head h2{ font-family: var(--serif); font-size: 24px; margin: 0; font-weight: 600; }
+
+  .instructions{ color: var(--ink-soft); max-width: 62ch; margin: 0 0 22px; }
+
+  .concept-box{
+    margin-top: 16px; background: var(--paper-dark); border: 1px solid var(--line); padding: 4px 16px;
+  }
+  .concept-box summary{ cursor: pointer; font-family: var(--mono); font-size: 13px; padding: 10px 0; color: var(--ink-soft); }
+  .concept-box[open] summary{ color: var(--ink); }
+  .concept-box p{ font-size: 14px; margin: 0 0 14px; }
+  .concept-box p strong{ color: var(--teal); }
+
+  .recap{ font-family: var(--mono); font-size: 13px; color: var(--ink-soft); margin-bottom: 22px; }
+  blockquote{
+    font-family: var(--serif); font-size: clamp(20px, 4vw, 26px); line-height: 1.35;
+    margin: 0 0 8px; padding: 0 0 0 20px; border-left: 4px solid var(--gold);
+  }
+  .cite{ font-family: var(--mono); font-size: 12px; color: var(--ink-soft); margin: 0 0 26px; }
+  ol.prompts{ padding-left: 20px; margin: 0; }
+  ol.prompts li{ margin-bottom: 12px; }
+
+  .discuss{
+    margin-top: 22px; padding: 14px 16px; background: var(--paper-dark);
+    border-left: 3px solid var(--ink); font-size: 14px; color: var(--ink-soft);
+  }
+  .discuss strong{ color: var(--ink); }
+  .discuss.starters{ border-left-color: var(--gold); }
+
+  .back-link{ font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
+
+  footer.endstamp{
+    margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line);
+    font-family: var(--mono); font-size: 12px; color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="kicker">US 1100 — MODULE 3 — IN-CLASS EXHIBIT ROOM — PART 3 OF 3</p>
+    <h1>Whose Formula Is This?</h1>
+    <p><a class="back-link" href="exhibit-b.html">← Exhibit B</a></p>
+  </header>
+
+  <details class="concept-box">
+    <summary>Reminder: the lens we're using today</summary>
+    <p><strong>Banking model</strong> (Freire) — the module deposits a "correct," universal technique into a student treated as a neutral, empty container. The technique is presented as working the same for everyone.</p>
+    <p><strong>Liberatory / problem-posing model</strong> — student and instructor investigate together, testing a rule against real conditions instead of accepting it as neutral. A "best practice" is a claim to test, not a deposit to accept.</p>
+  </details>
+
+  <div class="exhibit-head">
+    <span class="exhibit-tag">EXHIBIT C</span>
+    <h2>The fine print</h2>
+  </div>
+
+  <p class="recap" id="recap"></p>
+
+  <blockquote>"Any time a professor willingly gives you an advantage in a course, use it!"</blockquote>
+  <p class="cite">— this week's Note-Taking handout, on instructor-provided materials</p>
+
+  <p class="instructions">Read that line again. It calls clear instructions and materials an <em>advantage</em> — something a professor chooses to hand out, not something you're owed.</p>
+
+  <div class="discuss starters">
+    <strong>While you read:</strong> Read the quote out loud at your table before answering alone. Does everyone hear it the same way?
+  </div>
+
+  <ol class="prompts">
+    <li>Who decided that clarity is a gift instead of a baseline? What changes if you flip that assumption?</li>
+    <li>Think back to Exhibit A's "assumes" pile. Which tools there hand out that same kind of unearned advantage — to whoever already happens to know the unwritten rules?</li>
+    <li>Rewrite the quote as if professors owed students clear expectations. Say it out loud to your table.</li>
+  </ol>
+
+  <footer class="endstamp">
+    US 1100 · Module 3 in-class session · built for one-time classroom use
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var recap = document.getElementById('recap');
+  var raw;
+  try { raw = localStorage.getItem('us1100-exhibit-a-tally'); } catch(e) { raw = null; }
+
+  if(raw){
+    var t = JSON.parse(raw);
+    recap.textContent = 'Your table sorted ' + t.assumes + ' of 8 tools as "assumes you already know" and ' + t.teaches + ' as "teaches something new."' +
+      (t.unsorted > 0 ? ' (' + t.unsorted + ' were still unsorted when Exhibit A closed.)' : '');
+  } else {
+    recap.textContent = 'Recall your Exhibit A sort with your table before reading on.';
+  }
+})();
+</script>
+
+</body>
+</html>

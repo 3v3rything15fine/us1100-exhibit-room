@@ -217,17 +217,14 @@
 </head>
 <body>
 
-<div class="locked-overlay" id="gate">
-  <h1 style="margin-bottom:0">Presenter access</h1>
-  <p class="kicker" style="margin-bottom:0">Enter the passcode to control today's session.</p>
-  <input type="password" id="passcode-input" placeholder="Passcode" autofocus>
-  <button id="unlock-btn" type="button">Unlock</button>
-  <p class="err" id="gate-err"></p>
-</div>
-
-<div class="wrap" id="panel" hidden>
+<div class="wrap" id="panel">
   <h1>Presenter Console</h1>
   <p class="kicker">Whose Formula Is This? — US 1100 Module 3</p>
+
+  <div class="card" style="border-left: 3px solid var(--alarm)">
+    <h2>Live-sync backend is offline today</h2>
+    <p class="session-note" style="margin:0">The exhibits run as three separate pages instead — index.html, exhibit-b.html, exhibit-c.html. Pacing works by which link you hand out, not a shared control panel, so there's nothing to log into here. This card (and the passcode) can come back once the backend is restored; for now this console is just warm-up slides + share links.</p>
+  </div>
 
   <div class="card warmup-card" id="warmup-card">
     <h2 style="color:var(--paper)">Warm-up — before phones come out</h2>
@@ -245,38 +242,12 @@
   </div>
 
   <div class="card">
-    <h2>Show exhibit</h2>
-    <p class="session-note" style="margin:0 0 12px">Students only ever see the one you pick here, plus its own discussion-starter prompts. Nothing is cumulative — opening B hides A.</p>
-    <div class="stage-row">
-      <button class="stage-btn" data-stage="warmup">Warm-up (none)</button>
-      <button class="stage-btn" data-stage="a">Exhibit A</button>
-      <button class="stage-btn" data-stage="b">Exhibit B</button>
-      <button class="stage-btn" data-stage="c">Exhibit C</button>
-    </div>
-    <p class="session-note" id="session-note">connecting…</p>
-  </div>
-
-  <div class="card">
-    <h2>Class tally — Exhibit A</h2>
-    <div class="big-tally">
-      <div class="stat"><div class="num" id="n-assumes">0</div><div class="lbl">"ASSUMES" PICKS</div></div>
-      <div class="stat"><div class="num" id="n-teaches">0</div><div class="lbl">"TEACHES" PICKS</div></div>
-      <div class="stat"><div class="num" id="n-students">0</div><div class="lbl">STUDENTS SUBMITTED</div></div>
-    </div>
-  </div>
-
-  <div class="card">
     <h2>Share with the room</h2>
+    <p class="session-note" style="margin:0 0 12px">Hand out the Exhibit A link to start. When you're ready to move the class on, tell them to click "Continue" at the bottom of the page — Exhibit A links to B, B links to C.</p>
     <div class="qr-box">
       <svg id="qr" width="160" height="160" viewBox="0 0 160 160"></svg>
       <code id="student-url"></code>
     </div>
-  </div>
-
-  <div class="card">
-    <h2>New class session</h2>
-    <p class="session-note">Reuse this same site later in the term — this resets to "nothing open yet" and clears today's tally under a fresh date-keyed session. It does not touch the code, only the live state.</p>
-    <button class="ghost" id="new-session-btn">Start a new session (today's date)</button>
   </div>
 </div>
 
@@ -333,96 +304,6 @@
     if(e.key === 'ArrowLeft') document.getElementById('warmup-prev').click();
   });
   renderWarmup();
-
-  var TOKEN_KEY = 'us1100-presenter-token';
-  var token = localStorage.getItem(TOKEN_KEY) || '';
-
-  var gate = document.getElementById('gate');
-  var panel = document.getElementById('panel');
-
-  function tryToken(candidate){
-    // Re-send whatever stage is already live so verifying the passcode
-    // never itself changes where students are.
-    return fetch('/api/state').then(function(r){ return r.json(); }).then(function(state){
-      return fetch('/api/advance', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ token: candidate, stage: state.stage })
-      });
-    }).then(function(r){
-      if(r.status === 401) return false;
-      return r.json().then(function(data){
-        applyState(data);
-        return true;
-      });
-    });
-  }
-
-  document.getElementById('unlock-btn').addEventListener('click', function(){
-    var val = document.getElementById('passcode-input').value;
-    tryToken(val).then(function(ok){
-      if(ok){
-        token = val;
-        localStorage.setItem(TOKEN_KEY, token);
-        gate.hidden = true;
-        panel.hidden = false;
-        pollState();
-      } else {
-        document.getElementById('gate-err').textContent = 'Wrong passcode.';
-      }
-    });
-  });
-  document.getElementById('passcode-input').addEventListener('keydown', function(e){
-    if(e.key === 'Enter') document.getElementById('unlock-btn').click();
-  });
-
-  // if we already have a saved token, verify it silently (re-sends current stage, harmless)
-  if(token){
-    tryToken(token).then(function(ok){
-      if(ok){
-        gate.hidden = true;
-        panel.hidden = false;
-        pollState();
-      }
-    }).catch(function(){});
-  }
-
-  var STAGE_LABELS = { warmup: 'nothing open yet', a: 'Exhibit A open', b: 'Exhibit B open', c: 'Exhibit C open' };
-
-  function applyState(data){
-    document.querySelectorAll('.stage-btn').forEach(function(btn){
-      btn.setAttribute('aria-pressed', btn.dataset.stage === data.stage);
-    });
-    document.getElementById('session-note').textContent = 'Session ' + data.session + ' · ' + (STAGE_LABELS[data.stage] || data.stage);
-    document.getElementById('n-assumes').textContent = data.aggregate.assumes;
-    document.getElementById('n-teaches').textContent = data.aggregate.teaches;
-    document.getElementById('n-students').textContent = data.aggregate.n;
-  }
-
-  function pollState(){
-    fetch('/api/state').then(function(r){ return r.json(); }).then(applyState).catch(function(){});
-  }
-
-  document.querySelectorAll('.stage-btn').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      fetch('/api/advance', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ token: token, stage: btn.dataset.stage })
-      }).then(function(r){ return r.json(); }).then(applyState);
-    });
-  });
-
-  document.getElementById('new-session-btn').addEventListener('click', function(){
-    if(!confirm('Start a brand-new session for today\'s date? This clears the current tally.')) return;
-    fetch('/api/advance', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ token: token, action: 'new_session' })
-    }).then(function(r){ return r.json(); }).then(applyState);
-  });
-
-  if(token){ setInterval(pollState, 4000); }
 
   // ---------- QR code + student URL ----------
   var studentUrl = location.origin + '/';
