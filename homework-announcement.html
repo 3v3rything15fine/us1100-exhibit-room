@@ -75,6 +75,10 @@
     font-size: 30px;
     font-weight: 800;
     letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .hw-announce .hw-timer.hw-done .hw-timer-value {
+    color: #ff5566;
   }
   .hw-announce .hw-rules {
     text-align: left;
@@ -123,9 +127,9 @@
     <h1>Heads up! It's <span class="hw-highlight">Homework Deadline Day</span></h1>
     <p class="hw-subtitle">Yes, both weeks. Yes, all of it. Yes, today.</p>
 
-    <div class="hw-timer">
-      <div class="hw-timer-label">Deadline</div>
-      <div class="hw-timer-value">5:00 PM TODAY</div>
+    <div class="hw-timer" id="hw-timer">
+      <div class="hw-timer-label" id="hw-timer-label">Deadline</div>
+      <div class="hw-timer-value" id="hw-timer-value">5:00 PM TODAY</div>
     </div>
 
     <ul class="hw-rules">
@@ -140,5 +144,42 @@
   </div>
 </div>
 
+<script>
+  (function () {
+    var labelEl = document.getElementById('hw-timer-label');
+    var valueEl = document.getElementById('hw-timer-value');
+    var timerEl = document.getElementById('hw-timer');
+    if (!labelEl || !valueEl || !timerEl) return;
+
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      var now = new Date();
+      var deadline = new Date();
+      deadline.setHours(17, 0, 0, 0);
+      var diff = deadline - now;
+
+      if (diff <= 0) {
+        labelEl.textContent = 'Deadline';
+        valueEl.textContent = "TIME'S UP!";
+        timerEl.classList.add('hw-done');
+        clearInterval(intervalId);
+        return;
+      }
+
+      var hours = Math.floor(diff / 3600000);
+      diff -= hours * 3600000;
+      var minutes = Math.floor(diff / 60000);
+      diff -= minutes * 60000;
+      var seconds = Math.floor(diff / 1000);
+
+      labelEl.textContent = 'Time remaining until 5:00 PM';
+      valueEl.textContent = pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+    }
+
+    tick();
+    var intervalId = setInterval(tick, 1000);
+  })();
+</script>
 </body>
 </html>
